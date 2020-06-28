@@ -7,7 +7,7 @@ using System.Text;
 
 namespace PMSShop.Data.EF
 {
-    class PMSShopDbContext : DbContext
+    public class PMSShopDbContext : DbContext
     {
         public PMSShopDbContext(DbContextOptions options) : base(options)
         {
