@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PMSShop.Data.Configurations;
 using PMSShop.Data.Entities;
+using PMSShop.Data.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -14,6 +15,7 @@ namespace PMSShop.Data.EF
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            //Configuration using Fluent
             modelBuilder.ApplyConfiguration(new CartConfiguration());
 
             modelBuilder.ApplyConfiguration(new AppConfigConfiguration());
@@ -29,6 +31,10 @@ namespace PMSShop.Data.EF
             modelBuilder.ApplyConfiguration(new ProductTranslationConfiguration());
             modelBuilder.ApplyConfiguration(new PromotionConfiguration());
             modelBuilder.ApplyConfiguration(new TransactionConfiguration());
+
+            //data seeding
+            modelBuilder.Seed();
+
             //base.OnModelCreating(modelBuilder);
         }
         public DbSet<Product> Products { get; set; }
