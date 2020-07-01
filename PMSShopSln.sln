@@ -5,6 +5,10 @@ VisualStudioVersion = 16.0.30204.135
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PMSShop.WebApp", "PMSShop.WebApp\PMSShop.WebApp.csproj", "{FB5A2547-6F7D-4B1B-A187-241BE9A23F49}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PMSShop.Data", "PMSShop.Data\PMSShop.Data.csproj", "{BB97DCE5-15CD-4284-A314-D2D6F3A53465}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PMSShop.Application", "PMSShop.Application\PMSShop.Application.csproj", "{2359D895-80A0-44EA-AB20-9606AC4A0C20}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{FB5A2547-6F7D-4B1B-A187-241BE9A23F49}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FB5A2547-6F7D-4B1B-A187-241BE9A23F49}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FB5A2547-6F7D-4B1B-A187-241BE9A23F49}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB97DCE5-15CD-4284-A314-D2D6F3A53465}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB97DCE5-15CD-4284-A314-D2D6F3A53465}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB97DCE5-15CD-4284-A314-D2D6F3A53465}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB97DCE5-15CD-4284-A314-D2D6F3A53465}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2359D895-80A0-44EA-AB20-9606AC4A0C20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2359D895-80A0-44EA-AB20-9606AC4A0C20}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2359D895-80A0-44EA-AB20-9606AC4A0C20}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2359D895-80A0-44EA-AB20-9606AC4A0C20}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
