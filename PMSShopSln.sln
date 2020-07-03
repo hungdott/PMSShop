@@ -3,11 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30204.135
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PMSShop.WebApp", "PMSShop.WebApp\PMSShop.WebApp.csproj", "{FB5A2547-6F7D-4B1B-A187-241BE9A23F49}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PMSShop.WebApp", "PMSShop.WebApp\PMSShop.WebApp.csproj", "{FB5A2547-6F7D-4B1B-A187-241BE9A23F49}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PMSShop.Data", "PMSShop.Data\PMSShop.Data.csproj", "{BB97DCE5-15CD-4284-A314-D2D6F3A53465}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PMSShop.Data", "PMSShop.Data\PMSShop.Data.csproj", "{BB97DCE5-15CD-4284-A314-D2D6F3A53465}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PMSShop.Application", "PMSShop.Application\PMSShop.Application.csproj", "{2359D895-80A0-44EA-AB20-9606AC4A0C20}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PMSShop.Application", "PMSShop.Application\PMSShop.Application.csproj", "{2359D895-80A0-44EA-AB20-9606AC4A0C20}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PMSShop.Utilities", "PMSShop.Utilities\PMSShop.Utilities.csproj", "{9B79199F-BDD9-4A42-BF89-1B7180B1B1BE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PMSShop.ViewModels", "PMSShop.ViewModels\PMSShop.ViewModels.csproj", "{E458FBBA-BB91-497B-B76A-90D6AB4A4E3E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +31,14 @@ Global
 		{2359D895-80A0-44EA-AB20-9606AC4A0C20}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2359D895-80A0-44EA-AB20-9606AC4A0C20}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2359D895-80A0-44EA-AB20-9606AC4A0C20}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B79199F-BDD9-4A42-BF89-1B7180B1B1BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B79199F-BDD9-4A42-BF89-1B7180B1B1BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B79199F-BDD9-4A42-BF89-1B7180B1B1BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B79199F-BDD9-4A42-BF89-1B7180B1B1BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E458FBBA-BB91-497B-B76A-90D6AB4A4E3E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E458FBBA-BB91-497B-B76A-90D6AB4A4E3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E458FBBA-BB91-497B-B76A-90D6AB4A4E3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E458FBBA-BB91-497B-B76A-90D6AB4A4E3E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

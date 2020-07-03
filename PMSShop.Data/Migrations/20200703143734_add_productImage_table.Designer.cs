@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PMSShop.Data.EF;
 
 namespace PMSShop.Data.Migrations
 {
     [DbContext(typeof(PMSShopDbContext))]
-    partial class PMSShopDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200703143734_add_productImage_table")]
+    partial class add_productImage_table
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -180,7 +182,7 @@ namespace PMSShop.Data.Migrations
                         new
                         {
                             Id = new Guid("8d04dce2-969a-435d-bba4-df3f325983dc"),
-                            ConcurrencyStamp = "d6ea0076-8c5b-4dc9-8bd1-dd766ed68f14",
+                            ConcurrencyStamp = "35630643-298a-449c-8229-0692db866171",
                             Description = "Administrator role",
                             Name = "admin",
                             NormalizedName = "admin"
@@ -257,7 +259,7 @@ namespace PMSShop.Data.Migrations
                         {
                             Id = new Guid("69bd714f-9576-45ba-b5b7-f00649be00de"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "e94863a3-3bc3-453e-b14f-e9c675250a40",
+                            ConcurrencyStamp = "7e294f91-09e1-49c0-ac66-0f81cdcc33d1",
                             Dob = new DateTime(2020, 1, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "hungdo99tt@gmail.com",
                             EmailConfirmed = true,
@@ -266,7 +268,7 @@ namespace PMSShop.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "hungdo99tt@gmail.com",
                             NormalizedUserName = "admin",
-                            PasswordHash = "AQAAAAEAACcQAAAAEAXAwRmQLPJ/zVSC453FXFH8sIHs79wl6lV1+mPCmbA9DD5cb3U6rvg+ONGzKuzD0g==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEPoco2hPtvjlT0U6JFbpqwX5tOEdkgEZ4Ja3oTRA8TPzrFSboDn4TpJLnW2Fef8QkA==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             TwoFactorEnabled = false,
@@ -614,7 +616,7 @@ namespace PMSShop.Data.Migrations
                         new
                         {
                             Id = 1,
-                            DateCreated = new DateTime(2020, 7, 3, 22, 18, 35, 487, DateTimeKind.Local).AddTicks(5524),
+                            DateCreated = new DateTime(2020, 7, 3, 21, 37, 33, 363, DateTimeKind.Local).AddTicks(6013),
                             OriginalPrice = 100000m,
                             Price = 200000m,
                             Stock = 0,
@@ -638,8 +640,8 @@ namespace PMSShop.Data.Migrations
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime2");
 
-                    b.Property<long>("FileSize")
-                        .HasColumnType("bigint");
+                    b.Property<int>("FileSize")
+                        .HasColumnType("int");
 
                     b.Property<string>("ImagePath")
                         .IsRequired()
