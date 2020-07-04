@@ -15,6 +15,8 @@ using Microsoft.AspNetCore.Http;
 using System.Net.Http.Headers;
 using System.IO;
 using PMSShop.Application.Common;
+using Microsoft.VisualBasic;
+using System.Security.Cryptography.X509Certificates;
 
 namespace PMSShop.Application.Catalog.Products
 {
@@ -26,6 +28,27 @@ namespace PMSShop.Application.Catalog.Products
         {
             _context = context;
             _storageService = storageService;
+        }
+
+        public async Task<int> AddImages(int productId, List<IFormFile> files)
+        {
+            var product = await _context.Products.FirstOrDefaultAsync(x => x.Id == productId);
+            if (product == null) throw new PMSShopException("Product không tồn tại");
+            foreach (var file in files)
+            {
+                var productImage = new ProductImage()
+                {
+                    ImagePath = await this.SaveFile(file),
+                    Caption = file.FileName,
+                    ProductId = productId,
+                    DateCreated = DateTime.Now,
+                    IsDefault = true,
+                    FileSize = file.Length,
+                    SortOrder = 1
+                };
+                _context.ProductImages.Add(productImage);
+            }
+            return await _context.SaveChangesAsync();
         }
 
         public async Task AddViewCount(int productId)
@@ -95,7 +118,7 @@ namespace PMSShop.Application.Catalog.Products
             var images = await _context.ProductImages.Where(x => x.ProductId == productId).ToListAsync();
             foreach (var image in images)
             {
-              await  _storageService.DeleteFileAsync(image.ImagePath);
+                await _storageService.DeleteFileAsync(image.ImagePath);
             }
             _context.Products.Remove(product);
             return await _context.SaveChangesAsync();
@@ -141,6 +164,31 @@ namespace PMSShop.Application.Catalog.Products
             return pageResult;
         }
 
+        public async Task<List<ProductImageViewModel>> GetListImage(int productId)
+        {
+            var lstImage = await (from productImage in _context.ProductImages
+                                  join product in _context.Products on productImage.ProductId equals product.Id into tbl_proJoin
+                                  from projoin in tbl_proJoin.DefaultIfEmpty()
+                                  where projoin.Id == productId
+                                  select new ProductImageViewModel()
+                                  {
+                                      Id = productImage.Id,
+                                      FilePath = productImage.ImagePath,
+                                      IsDefault = productImage.IsDefault,
+                                      FileSize = productImage.FileSize
+                                  }).ToListAsync(); 
+            return lstImage;
+        }
+
+        public async Task<int> RemoveImages(int imageId)
+        {
+            var productImage = await _context.ProductImages.FirstOrDefaultAsync(x => x.Id == imageId);
+            if (productImage == null) throw new PMSShopException("Ảnh không tồn tại");
+            await _storageService.DeleteFileAsync(productImage.ImagePath);
+            _context.ProductImages.Remove(productImage);
+            return await _context.SaveChangesAsync();
+        }
+
         public async Task<int> Update(ProductUpdateRequest request)
         {
             var product = await _context.Products.FindAsync(request.Id);
@@ -154,6 +202,16 @@ namespace PMSShop.Application.Catalog.Products
             productTranslations.SeoTitle = request.SeoTitle;
             productTranslations.Description = request.Description;
             productTranslations.Details = request.Details;
+            return await _context.SaveChangesAsync();
+        }
+
+        public async Task<int> UpdateImage(int imageId, string caption, bool isDefault)
+        {
+            var productImage = await _context.ProductImages.FirstOrDefaultAsync(x => x.Id == imageId);
+            if (productImage == null) throw new PMSShopException("Ảnh không tồn tại");
+            productImage.Caption = caption;
+            productImage.IsDefault = isDefault;
+            _context.ProductImages.Update(productImage);
             return await _context.SaveChangesAsync();
         }
 
