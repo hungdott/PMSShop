@@ -16,6 +16,7 @@ using System.IO;
 using PMSShop.Application.Common;
 using Microsoft.VisualBasic;
 using System.Security.Cryptography.X509Certificates;
+using PMSShop.ViewModels.Catalog.ProductImages;
 
 namespace PMSShop.Application.Catalog.Products
 {
@@ -23,31 +24,31 @@ namespace PMSShop.Application.Catalog.Products
     {
         private readonly PMSShopDbContext _context;
         private readonly IStorageService _storageService;
+
         public ManagerProductService(PMSShopDbContext context, IStorageService storageService)
         {
             _context = context;
             _storageService = storageService;
         }
 
-        public async Task<int> AddImages(int productId, List<IFormFile> files)
+        public async Task<int> AddImage(int productId, ProductImageCreateRequest request)
         {
-            var product = await _context.Products.FirstOrDefaultAsync(x => x.Id == productId);
-            if (product == null) throw new PMSShopException("Product không tồn tại");
-            foreach (var file in files)
+            var productImage = new ProductImage()
             {
-                var productImage = new ProductImage()
-                {
-                    ImagePath = await this.SaveFile(file),
-                    Caption = file.FileName,
-                    ProductId = productId,
-                    DateCreated = DateTime.Now,
-                    IsDefault = true,
-                    FileSize = file.Length,
-                    SortOrder = 1
-                };
-                _context.ProductImages.Add(productImage);
+                Caption = request.Caption,
+                DateCreated = DateTime.Now,
+                IsDefault = request.IsDefault,
+                ProductId = productId,
+                SortOrder = request.SortOrder
+            };
+            if (request.ImageFile != null)
+            {
+                productImage.ImagePath = await this.SaveFile(request.ImageFile);
+                productImage.FileSize = request.ImageFile.Length;
             }
-            return await _context.SaveChangesAsync();
+            _context.ProductImages.Add(productImage);
+            await _context.SaveChangesAsync();
+            return productImage.Id;
         }
 
         public async Task AddViewCount(int productId)
@@ -61,7 +62,6 @@ namespace PMSShop.Application.Catalog.Products
         {
             var product = new Product()
             {
-
                 Price = request.Price,
                 OriginalPrice = request.OriginalPrice,
                 Stock = request.Stock,
@@ -84,14 +84,6 @@ namespace PMSShop.Application.Catalog.Products
 
             if (request.ThumbnailImage != null)
             {
-                var thumbnailImage = await _context.ProductImages.FirstOrDefaultAsync(x => x.IsDefault == true && x.ProductId == request.Id);
-                if (thumbnailImage != null)
-                {
-                    thumbnailImage.FileSize = request.ThumbnailImage.Length;
-                    thumbnailImage.ImagePath = await this.SaveFile(request.ThumbnailImage);
-                    _context.ProductImages.Update(thumbnailImage);
-                }
-
                 product.ProductImages = new List<ProductImage>()
                 {
                     new ProductImage()
@@ -102,7 +94,6 @@ namespace PMSShop.Application.Catalog.Products
                         ImagePath = await this.SaveFile(request.ThumbnailImage),
                         IsDefault = true,
                         SortOrder = 1
-
                     }
                 };
             }
@@ -162,7 +153,7 @@ namespace PMSShop.Application.Catalog.Products
             return pageResult;
         }
 
-        public async Task<ProductViewModel> GetById(int productId,string languageId)
+        public async Task<ProductViewModel> GetById(int productId, string languageId)
         {
             var product = await _context.Products.FindAsync(productId);
             var productTranslation = await _context.ProductTranslations.FirstOrDefaultAsync(x => x.ProductId == productId
@@ -187,28 +178,47 @@ namespace PMSShop.Application.Catalog.Products
             return productViewModel;
         }
 
-        public async Task<List<ProductImageViewModel>> GetListImage(int productId)
+        public async Task<ProductImageViewModel> GetImageById(int imageId)
         {
-            var lstImage = await (from productImage in _context.ProductImages
-                                  join product in _context.Products on productImage.ProductId equals product.Id into tbl_proJoin
-                                  from projoin in tbl_proJoin.DefaultIfEmpty()
-                                  where projoin.Id == productId
-                                  select new ProductImageViewModel()
-                                  {
-                                      Id = productImage.Id,
-                                      FilePath = productImage.ImagePath,
-                                      IsDefault = productImage.IsDefault,
-                                      FileSize = productImage.FileSize
-                                  }).ToListAsync(); 
-            return lstImage;
+            var image = await _context.ProductImages.FindAsync(imageId);
+            if (image == null) throw new PMSShopException($"Cannot find an inmage with id: {imageId}");
+            var viewModel = new ProductImageViewModel()
+            {
+                Caption = image.Caption,
+                DateCreated = image.DateCreated,
+                FileSize = image.FileSize,
+                Id = image.Id,
+                ImagePath = image.ImagePath,
+                IsDefault = image.IsDefault,
+                ProductId = image.ProductId,
+                SortOrder = image.SortOrder
+            };
+            return viewModel;
         }
 
-        public async Task<int> RemoveImages(int imageId)
+        public async Task<List<ProductImageViewModel>> GetListImages(int productId)
         {
-            var productImage = await _context.ProductImages.FirstOrDefaultAsync(x => x.Id == imageId);
-            if (productImage == null) throw new PMSShopException("Ảnh không tồn tại");
-            await _storageService.DeleteFileAsync(productImage.ImagePath);
+            return await _context.ProductImages
+                           .Where(x => x.ProductId == productId)
+                           .Select(x => new ProductImageViewModel()
+                           {
+                               Caption = x.Caption,
+                               DateCreated = x.DateCreated,
+                               FileSize = x.FileSize,
+                               Id = x.Id,
+                               ImagePath = x.ImagePath,
+                               IsDefault = x.IsDefault,
+                               ProductId = x.ProductId,
+                               SortOrder = x.SortOrder
+                           }).ToListAsync();
+        }
+
+        public async Task<int> RemoveImage(int imageId)
+        {
+            var productImage = await _context.ProductImages.FindAsync(imageId);
+            if (productImage == null) throw new PMSShopException($"Cannot find an product with id: {imageId}");
             _context.ProductImages.Remove(productImage);
+            //_context.Products
             return await _context.SaveChangesAsync();
         }
 
@@ -239,12 +249,18 @@ namespace PMSShop.Application.Catalog.Products
             return await _context.SaveChangesAsync();
         }
 
-        public async Task<int> UpdateImage(int imageId, string caption, bool isDefault)
+        public async Task<int> UpdateImage(int imageId, ProductImageUpdateRequest request)
         {
-            var productImage = await _context.ProductImages.FirstOrDefaultAsync(x => x.Id == imageId);
-            if (productImage == null) throw new PMSShopException("Ảnh không tồn tại");
-            productImage.Caption = caption;
-            productImage.IsDefault = isDefault;
+            var productImage = await _context.ProductImages.FindAsync(imageId);
+            if (productImage == null)
+            {
+                throw new PMSShopException($"Cannot find an inmage with id: {imageId}");
+            }
+            if (request.ImageFile != null)
+            {
+                productImage.ImagePath = await this.SaveFile(request.ImageFile);
+                productImage.FileSize = request.ImageFile.Length;
+            }
             _context.ProductImages.Update(productImage);
             return await _context.SaveChangesAsync();
         }
@@ -264,6 +280,7 @@ namespace PMSShop.Application.Catalog.Products
             product.Stock += addedQuantity;
             return await _context.SaveChangesAsync() > 0;
         }
+
         private async Task<string> SaveFile(IFormFile file)
         {
             var originalFileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
@@ -271,6 +288,5 @@ namespace PMSShop.Application.Catalog.Products
             await _storageService.SaveFileAsync(file.OpenReadStream(), fileName);
             return fileName;
         }
-
     }
 }

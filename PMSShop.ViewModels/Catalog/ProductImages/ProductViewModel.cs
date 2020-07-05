@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace PMSShop.ViewModels.Catalog.Products
+namespace PMSShop.ViewModels.Catalog.ProductImages
 {
     public class ProductViewModel
     {

@@ -8,7 +8,7 @@ using PMSShop.Utilities.LinqExtesions;
 using Microsoft.EntityFrameworkCore;
 using PMSShop.ViewModels.Catalog.Products;
 using PMSShop.ViewModels.Catalog.Common;
-
+using PMSShop.ViewModels.Catalog.ProductImages;
 
 namespace PMSShop.Application.Catalog.Products
 {
@@ -50,13 +50,13 @@ namespace PMSShop.Application.Catalog.Products
             return data;
         }
 
-        public async Task<PagedResult<ProductViewModel>> GetAllByCategoryID(GetPublicProductPagingRequest request)
+        public async Task<PagedResult<ProductViewModel>> GetAllByCategoryID(string languageId, GetPublicProductPagingRequest request)
         {
             var query = (from p in _context.Products
                          join pt in _context.ProductTranslations on p.Id equals pt.ProductId
                          join pic in _context.ProductInCategories on p.Id equals pic.ProductId
                          join ct in _context.Categories on pic.CategoryId equals ct.Id
-                         where pt.LanguageId.Equals(request.LanguageId)
+                         where pt.LanguageId.Equals(languageId)
                          //where pt.Name.Contains(request.Keyword)
                          select new { p, pt, pic })
                          .WhereIf(request.CategoryId.HasValue
