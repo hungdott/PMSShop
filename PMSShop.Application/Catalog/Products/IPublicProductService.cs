@@ -1,6 +1,5 @@
 ﻿using PMSShop.ViewModels.Catalog.Common;
 using PMSShop.ViewModels.Catalog.Products;
-using PMSShop.ViewModels.Catalog.Products.Public;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -10,6 +9,7 @@ namespace PMSShop.Application.Catalog.Products
 {
     public interface IPublicProductService
     {
-        Task<PagedResult<ProductViewModel>> GetAllByCategoryID(GetProductPagingRequest request);
+        Task<PagedResult<ProductViewModel>> GetAllByCategoryID(GetPublicProductPagingRequest request);
+        Task<List<ProductViewModel>> GetAll();
     }
 }

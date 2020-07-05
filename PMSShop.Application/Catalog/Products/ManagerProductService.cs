@@ -8,7 +8,6 @@ using System.Text;
 using System.Threading.Tasks;
 using PMSShop.Utilities.LinqExtesions;
 using Microsoft.EntityFrameworkCore;
-using PMSShop.ViewModels.Catalog.Products.Manager;
 using PMSShop.ViewModels.Catalog.Products;
 using PMSShop.ViewModels.Catalog.Common;
 using Microsoft.AspNetCore.Http;
@@ -126,7 +125,7 @@ namespace PMSShop.Application.Catalog.Products
 
 
 
-        public async Task<PagedResult<ProductViewModel>> GetAllPaging(GetProductPagingRequest request)
+        public async Task<PagedResult<ProductViewModel>> GetAllPaging(GetManagerProductPagingRequest request)
         {
             var query = (from p in _context.Products
                          join pt in _context.ProductTranslations on p.Id equals pt.ProductId

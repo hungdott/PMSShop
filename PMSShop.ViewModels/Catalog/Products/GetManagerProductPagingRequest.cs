@@ -3,9 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace PMSShop.ViewModels.Catalog.Products.Manager
+namespace PMSShop.ViewModels.Catalog.Products
 {
-    public class GetProductPagingRequest : PagingRequestBase
+    public class GetManagerProductPagingRequest : PagingRequestBase
     {
         public string Keyword { get; set; }
         public List<int> CategoryIds { get; set; }

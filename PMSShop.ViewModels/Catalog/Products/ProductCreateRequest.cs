@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace PMSShop.ViewModels.Catalog.Products.Manager
+namespace PMSShop.ViewModels.Catalog.Products
 {
     public class ProductCreateRequest
     {
