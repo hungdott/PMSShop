@@ -9,6 +9,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.5" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\PMSShop.Data\PMSShop.Data.csproj" />
     <ProjectReference Include="..\PMSShop.Utilities\PMSShop.Utilities.csproj" />
     <ProjectReference Include="..\PMSShop.ViewModels\PMSShop.ViewModels.csproj" />

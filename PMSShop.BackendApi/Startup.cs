@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using PMSShop.Application.Catalog.Products;
+using PMSShop.Application.Common;
 using PMSShop.Data.EF;
 using PMSShop.Utilities.Constants;
 
@@ -31,7 +32,9 @@ namespace PMSShop.BackendApi
             services.AddDbContext<PMSShopDbContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString(SystemContants.MainConnectionString)));
             //declare DI
+            services.AddTransient<IStorageService, FileStorageService>();
             services.AddTransient<IPublicProductService, PublicProductService>();
+            services.AddTransient<IManagerProductService, ManagerProductService>();
             
             services.AddControllersWithViews();
             services.AddSwaggerGen(c =>
