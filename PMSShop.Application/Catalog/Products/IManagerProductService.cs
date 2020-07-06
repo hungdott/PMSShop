@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
-using PMSShop.ViewModels.Catalog.Common;
 using PMSShop.ViewModels.Catalog.ProductImages;
 using PMSShop.ViewModels.Catalog.Products;
+using PMSShop.ViewModels.Common;
 using System;
 using System.Collections.Generic;
 using System.Text;

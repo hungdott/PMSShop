@@ -1,4 +1,4 @@
-﻿using PMSShop.ViewModels.Catalog.Common;
+﻿using PMSShop.ViewModels.Common;
 using System;
 using System.Collections.Generic;
 using System.Text;

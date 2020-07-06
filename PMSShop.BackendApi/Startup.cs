@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,7 +13,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using PMSShop.Application.Catalog.Products;
 using PMSShop.Application.Common;
+using PMSShop.Application.System.Users;
 using PMSShop.Data.EF;
+using PMSShop.Data.Entities;
 using PMSShop.Utilities.Constants;
 
 namespace PMSShop.BackendApi
@@ -31,11 +34,19 @@ namespace PMSShop.BackendApi
         {
             services.AddDbContext<PMSShopDbContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString(SystemContants.MainConnectionString)));
+            //store identity
+            services.AddIdentity<AppUser, AppRole>()
+                .AddEntityFrameworkStores<PMSShopDbContext>()
+                .AddDefaultTokenProviders();
             //declare DI
             services.AddTransient<IStorageService, FileStorageService>();
             services.AddTransient<IPublicProductService, PublicProductService>();
             services.AddTransient<IManagerProductService, ManagerProductService>();
-            
+            services.AddTransient<UserManager<AppUser>, UserManager<AppUser>>();
+            services.AddTransient<SignInManager<AppUser>, SignInManager<AppUser>>();
+            services.AddTransient<RoleManager<AppRole>, RoleManager<AppRole>>();
+            services.AddTransient<IUserService, UserService>();
+
             services.AddControllersWithViews();
             services.AddSwaggerGen(c =>
             {

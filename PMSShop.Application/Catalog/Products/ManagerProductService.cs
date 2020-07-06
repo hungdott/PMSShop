@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using PMSShop.Utilities.LinqExtesions;
 using Microsoft.EntityFrameworkCore;
 using PMSShop.ViewModels.Catalog.Products;
-using PMSShop.ViewModels.Catalog.Common;
 using Microsoft.AspNetCore.Http;
 using System.Net.Http.Headers;
 using System.IO;
@@ -17,6 +16,7 @@ using PMSShop.Application.Common;
 using Microsoft.VisualBasic;
 using System.Security.Cryptography.X509Certificates;
 using PMSShop.ViewModels.Catalog.ProductImages;
+using PMSShop.ViewModels.Common;
 
 namespace PMSShop.Application.Catalog.Products
 {

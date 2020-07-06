@@ -7,8 +7,8 @@ using System.Linq;
 using PMSShop.Utilities.LinqExtesions;
 using Microsoft.EntityFrameworkCore;
 using PMSShop.ViewModels.Catalog.Products;
-using PMSShop.ViewModels.Catalog.Common;
 using PMSShop.ViewModels.Catalog.ProductImages;
+using PMSShop.ViewModels.Common;
 
 namespace PMSShop.Application.Catalog.Products
 {

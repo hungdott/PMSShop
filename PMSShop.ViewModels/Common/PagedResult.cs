@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace PMSShop.ViewModels.Catalog.Common
+namespace PMSShop.ViewModels.Common
 {
     public class PagedResult<T>
     {
