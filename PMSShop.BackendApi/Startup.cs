@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -19,6 +21,7 @@ using PMSShop.Application.System.Users;
 using PMSShop.Data.EF;
 using PMSShop.Data.Entities;
 using PMSShop.Utilities.Constants;
+using PMSShop.ViewModels.System.Users;
 
 namespace PMSShop.BackendApi
 {
@@ -49,7 +52,15 @@ namespace PMSShop.BackendApi
             services.AddTransient<RoleManager<AppRole>, RoleManager<AppRole>>();
             services.AddTransient<IUserService, UserService>();
 
-            services.AddControllersWithViews();
+            //fluent
+            services.AddControllers().AddFluentValidation(
+                    fv =>
+                    {
+                        fv.RegisterValidatorsFromAssemblyContaining<RegisterRequestValidator>();
+                    });
+            //services.AddTransient<IValidator<LoginRequest>, LoginRequestValidator>();
+            //services.AddTransient<IValidator<RegisterRequest>, RegisterRequestValidator>();
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Swagger PMSShop", Version = "v1" });
