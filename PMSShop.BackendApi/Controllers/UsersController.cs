@@ -34,7 +34,7 @@ namespace PMSShop.BackendApi.Controllers
             {
                 return BadRequest("Username or password incorrect");
             }
-            return Ok(new { token = resultToken });
+            return Ok(resultToken);
         }
 
         [HttpPost("register")]
