@@ -20,12 +20,12 @@ using PMSShop.ViewModels.Common;
 
 namespace PMSShop.Application.Catalog.Products
 {
-    public class ManagerProductService : IManagerProductService
+    public class ProductService : IProductService
     {
         private readonly PMSShopDbContext _context;
         private readonly IStorageService _storageService;
 
-        public ManagerProductService(PMSShopDbContext context, IStorageService storageService)
+        public ProductService(PMSShopDbContext context, IStorageService storageService)
         {
             _context = context;
             _storageService = storageService;
@@ -287,6 +287,51 @@ namespace PMSShop.Application.Catalog.Products
             var fileName = $"{Guid.NewGuid()}{Path.GetExtension(originalFileName)}";
             await _storageService.SaveFileAsync(file.OpenReadStream(), fileName);
             return fileName;
+        }
+
+        public async Task<PagedResult<ProductViewModel>> GetAllByCategoryID(string languageId, GetPublicProductPagingRequest request)
+        {
+            var query = from p in _context.Products
+                        join pt in _context.ProductTranslations on p.Id equals pt.ProductId
+                        join pic in _context.ProductInCategories on p.Id equals pic.ProductId
+                        join ct in _context.Categories on pic.CategoryId equals ct.Id
+                        where pt.LanguageId.Equals(languageId)
+                        //where pt.Name.Contains(request.Keyword)
+                        select new { p, pt, pic };
+            if (request.CategoryId.HasValue && request.CategoryId.Value > 0)
+            {
+                query = query.Where(x => x.pic.CategoryId == request.CategoryId);
+            }
+            //.WhereIf(request.CategoryId.HasValue
+            //         && request.CategoryId.Value > 0,
+            //         x => request.CategoryId == x.pic.CategoryId)
+            //.AsQueryable();
+
+            int totalRow = await query.CountAsync();
+            var data = query.Skip((request.PageIndex - 1) * request.PageSize)
+                            .Take(request.PageSize)
+                            .Select(x => new ProductViewModel()
+                            {
+                                Id = x.p.Id,
+                                Name = x.pt.Name,
+                                Description = x.pt.Description,
+                                DateCreated = x.p.DateCreated,
+                                Details = x.pt.Details,
+                                LanguageId = x.pt.LanguageId,
+                                OriginalPrice = x.p.OriginalPrice,
+                                Price = x.p.Price,
+                                SeoAlias = x.pt.SeoAlias,
+                                SeoDescription = x.pt.SeoDescription,
+                                SeoTitle = x.pt.SeoTitle,
+                                Stock = x.p.Stock,
+                                ViewCount = x.p.ViewCount
+                            }).ToListAsync();
+            var pageResult = new PagedResult<ProductViewModel>()
+            {
+                TotalRecord = totalRow,
+                Items = await data
+            };
+            return pageResult;
         }
     }
 }

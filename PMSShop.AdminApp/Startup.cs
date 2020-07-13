@@ -42,6 +42,11 @@ namespace PMSShop.AdminApp
                     {
                         fv.RegisterValidatorsFromAssemblyContaining<LoginRequestValidator>();
                     });
+
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+            });
             //Declare DI
             services.AddTransient<IUserApiClient, UserApiClient>();
 
@@ -80,6 +85,8 @@ namespace PMSShop.AdminApp
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {

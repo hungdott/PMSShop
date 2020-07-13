@@ -1,4 +1,5 @@
-﻿using PMSShop.ViewModels.System.Users;
+﻿using PMSShop.ViewModels.Common;
+using PMSShop.ViewModels.System.Users;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,5 +12,7 @@ namespace PMSShop.Application.System.Users
         Task<string> Authencate(LoginRequest request);
 
         Task<bool> Register(RegisterRequest request);
+
+        Task<PagedResult<UserViewModel>> GetUsersPaging(GetUserPagingRequest request);
     }
 }

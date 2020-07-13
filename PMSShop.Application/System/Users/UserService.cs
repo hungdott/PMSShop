@@ -2,12 +2,14 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using PMSShop.Application.Common;
 using PMSShop.Data.Entities;
 using PMSShop.Utilities.Constants;
 using PMSShop.Utilities.Exceptions;
+using PMSShop.ViewModels.Common;
 using PMSShop.ViewModels.System.Users;
 using System;
 using System.Collections.Generic;
@@ -104,6 +106,38 @@ namespace PMSShop.Application.System.Users
             var fileName = $"{Guid.NewGuid()}{Path.GetExtension(originalFileName)}";
             await _storageService.SaveFileAsync(file.OpenReadStream(), fileName);
             return fileName;
+        }
+
+        public async Task<PagedResult<UserViewModel>> GetUsersPaging(GetUserPagingRequest request)
+        {
+            var query = _userManage.Users;
+            if (!String.IsNullOrEmpty(request.Keyword))
+            {
+                query = query.Where(x => x.UserName.Contains(request.Keyword) || x.Email.Contains(request.Keyword));
+            }
+
+            int totalRow = await query.CountAsync();
+            var data = await query.Skip((request.PageIndex - 1) * request.PageSize)
+                            .Take(request.PageSize)
+                            .Select(x => new UserViewModel()
+                            {
+                                Id = x.Id,
+                                FirstName = x.FirstName,
+
+                                LastName = x.LastName,
+
+                                PhoneNumber = x.PhoneNumber,
+
+                                UserName = x.UserName,
+
+                                Email = x.Email
+                            }).ToListAsync();
+            var pageResult = new PagedResult<UserViewModel>()
+            {
+                TotalRecord = totalRow,
+                Items = data
+            };
+            return pageResult;
         }
     }
 }

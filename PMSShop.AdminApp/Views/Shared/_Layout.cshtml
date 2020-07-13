@@ -1,4 +1,15 @@
-﻿<!DOCTYPE html>
+﻿@{ 
+    string pathImage = User
+        .Claims
+        .Where(x => x.Type == "avatar")
+        .FirstOrDefault() != null &&
+        !String.IsNullOrEmpty(User
+        .Claims
+        .Where(x => x.Type == "avatar")
+        .FirstOrDefault().Value)
+        ? User.Claims.Where(x => x.Type == "avatar").FirstOrDefault().Value : "https://source.unsplash.com/QAB-WJcbgJk/60x60";
+}
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -16,7 +27,7 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
 
     <!-- Custom styles for this template-->
-    <link href="css/sb-admin-2.min.css" rel="stylesheet">
+    <link href="/css/sb-admin-2.min.css" rel="stylesheet">
 </head>
 
 <body id="page-top">
@@ -300,9 +311,7 @@
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="mr-2 d-none d-lg-inline text-gray-600 small">@User.Identity.Name</span>
                                 <img class="img-profile rounded-circle"
-                                     src=@(User.Claims.Where(x=>x.Type=="avatar").FirstOrDefault() != null &&
-                                         User.Claims.Where(x=>x.Type=="avatar").FirstOrDefault().Value != null
-                                         ? User.Claims.Where(x=>x.Type=="avatar").FirstOrDefault().Value : "https: //source.unsplash.com/QAB-WJcbgJk/60x60")>
+                                     src=@pathImage>
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
@@ -385,6 +394,7 @@
 
     <!-- Page level custom scripts -->
     <script src="/js/demo/chart-area-demo.js"></script>
+
     <script src="/js/demo/chart-pie-demo.js"></script>
 </body>
 </html>

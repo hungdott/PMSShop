@@ -339,3 +339,4 @@ ASALocalRun/
 # BeatPulse healthcheck temp database
 healthchecksdb
 /PMSShop.BackendApi/wwwroot/user-content
+appsettings*.json
