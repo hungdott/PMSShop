@@ -13,6 +13,7 @@ namespace PMSShop.Data.Configurations
         {
             builder.ToTable("AppUsers");
             builder.Property(x => x.FirstName).HasMaxLength(50).IsRequired();
+            builder.Property(x => x.Avatar).HasMaxLength(200);
             builder.Property(x => x.LastName).HasMaxLength(50).IsRequired();
             builder.Property(x => x.Dob).IsRequired();
         }

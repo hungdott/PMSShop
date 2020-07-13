@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PMSShop.Data.EF;
 
 namespace PMSShop.Data.Migrations
 {
     [DbContext(typeof(PMSShopDbContext))]
-    partial class PMSShopDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200713041414_add_avatar_size_AppUser")]
+    partial class add_avatar_size_AppUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

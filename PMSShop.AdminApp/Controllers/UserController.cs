@@ -51,7 +51,7 @@ namespace PMSShop.AdminApp.Controllers
             var authProperties = new AuthenticationProperties
             {
                 ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10),
-                IsPersistent = false
+                IsPersistent = request.RememberMe
             };
             await HttpContext.SignInAsync(
                         CookieAuthenticationDefaults.AuthenticationScheme,

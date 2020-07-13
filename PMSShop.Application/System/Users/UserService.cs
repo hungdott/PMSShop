@@ -1,13 +1,20 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using PMSShop.Application.Common;
 using PMSShop.Data.Entities;
+using PMSShop.Utilities.Constants;
 using PMSShop.Utilities.Exceptions;
 using PMSShop.ViewModels.System.Users;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.IO;
+using System.Linq;
+using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,13 +27,16 @@ namespace PMSShop.Application.System.Users
         private readonly SignInManager<AppUser> _signInManager;
         private readonly RoleManager<AppRole> _roleManager;
         private readonly IConfiguration _config;
+        private readonly IStorageService _storageService;
+        private const string USER_CONTENT_FOLDER_NAME = "user-content";
 
-        public UserService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, RoleManager<AppRole> roleManager, IConfiguration config)
+        public UserService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, RoleManager<AppRole> roleManager, IConfiguration config, IStorageService storageService)
         {
             _userManage = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
             _config = config;
+            _storageService = storageService;
         }
 
         public async Task<string> Authencate(LoginRequest request)
@@ -39,13 +49,21 @@ namespace PMSShop.Application.System.Users
                 return null;
             }
             var roles = _userManage.GetRolesAsync(user);
+            var pathAvartar = "";
+            if (!String.IsNullOrEmpty(user.Avatar))
+            {
+                pathAvartar = SystemContants.HostAPI + _storageService.GetFileUrl(user.Avatar);
+                // claims.ToList().Add(new Claim("avatar", pathAvartar));
+            }
             var claims = new[]
             {
                 new Claim(ClaimTypes.Email,user.Email),
                 new Claim(ClaimTypes.GivenName,user.FirstName),
                 new Claim(ClaimTypes.Role,string.Join(";",roles)),
-                new Claim(ClaimTypes.Name,request.Username)
+                new Claim(ClaimTypes.Name,request.Username),
+                new Claim("avatar",pathAvartar)
             };
+
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Tokens:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
             var token = new JwtSecurityToken(_config["Tokens:Issuer"],
@@ -67,12 +85,25 @@ namespace PMSShop.Application.System.Users
                 PhoneNumber = request.PhoneNumber,
                 UserName = request.UserName
             };
+            if (request.Avatar != null)
+            {
+                user.Avatar = await this.SaveFile(request.Avatar);
+                user.FileSize = request.Avatar.Length;
+            }
             var result = await _userManage.CreateAsync(user, request.Password);
             if (result.Succeeded)
             {
                 return true;
             }
             return false;
+        }
+
+        private async Task<string> SaveFile(IFormFile file)
+        {
+            var originalFileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+            var fileName = $"{Guid.NewGuid()}{Path.GetExtension(originalFileName)}";
+            await _storageService.SaveFileAsync(file.OpenReadStream(), fileName);
+            return fileName;
         }
     }
 }
