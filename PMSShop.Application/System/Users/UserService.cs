@@ -30,18 +30,25 @@ namespace PMSShop.Application.System.Users
         private readonly RoleManager<AppRole> _roleManager;
         private readonly IConfiguration _config;
         private readonly IStorageService _storageService;
+
         private const string USER_CONTENT_FOLDER_NAME = "user-content";
 
-        public UserService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, RoleManager<AppRole> roleManager, IConfiguration config, IStorageService storageService)
+        public UserService(UserManager<AppUser> userManager,
+            SignInManager<AppUser> signInManager,
+            RoleManager<AppRole> roleManager,
+            IConfiguration config,
+
+            IStorageService storageService)
         {
             _userManage = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
             _config = config;
+
             _storageService = storageService;
         }
 
-        public async Task<string> Authencate(LoginRequest request)
+        public async Task<ApiResult<string>> Authencate(LoginRequest request)
         {
             var user = await _userManage.FindByNameAsync(request.Username);
             if (user == null) return null;
@@ -73,11 +80,20 @@ namespace PMSShop.Application.System.Users
                                              claims,
                                              expires: DateTime.Now.AddHours(3),
                                              signingCredentials: creds);
-            return new JwtSecurityTokenHandler().WriteToken(token);
+
+            return new ApiSuccessResult<string>(new JwtSecurityTokenHandler().WriteToken(token));
         }
 
-        public async Task<bool> Register(RegisterRequest request)
+        public async Task<ApiResult<bool>> Register(RegisterRequest request)
         {
+            if (await _userManage.FindByNameAsync(request.UserName) != null)
+            {
+                return new ApiErrorResult<bool>("Tài khoản đã tồn tại");
+            }
+            if (await _userManage.FindByEmailAsync(request.Email) != null)
+            {
+                return new ApiErrorResult<bool>("Emai đã tồn tại");
+            }
             var user = new AppUser()
             {
                 Dob = request.Dob,
@@ -95,9 +111,9 @@ namespace PMSShop.Application.System.Users
             var result = await _userManage.CreateAsync(user, request.Password);
             if (result.Succeeded)
             {
-                return true;
+                return new ApiSuccessResult<bool>();
             }
-            return false;
+            return new ApiErrorResult<bool>("Đăng ký không thành công");
         }
 
         private async Task<string> SaveFile(IFormFile file)
@@ -108,7 +124,7 @@ namespace PMSShop.Application.System.Users
             return fileName;
         }
 
-        public async Task<PagedResult<UserViewModel>> GetUsersPaging(GetUserPagingRequest request)
+        public async Task<ApiResult<PagedResult<UserViewModel>>> GetUsersPaging(GetUserPagingRequest request)
         {
             var query = _userManage.Users;
             if (!String.IsNullOrEmpty(request.Keyword))
@@ -132,12 +148,53 @@ namespace PMSShop.Application.System.Users
 
                                 Email = x.Email
                             }).ToListAsync();
-            var pageResult = new PagedResult<UserViewModel>()
+            var pagedResult = new PagedResult<UserViewModel>()
             {
                 TotalRecord = totalRow,
                 Items = data
             };
-            return pageResult;
+            return new ApiSuccessResult<PagedResult<UserViewModel>>(pagedResult);
+        }
+
+        public async Task<ApiResult<bool>> Update(Guid id, UserUpdateRequest request)
+        {
+            if (await _userManage.Users.AnyAsync(x => x.Email == request.Email && x.Id != id))
+            {
+                return new ApiErrorResult<bool>("Emai đã tồn tại");
+            }
+            var user = await _userManage.FindByIdAsync(id.ToString());
+            user.Dob = request.Dob;
+            user.Email = request.Email;
+            user.FirstName = request.FirstName;
+            user.LastName = request.LastName;
+            user.PhoneNumber = request.PhoneNumber;
+
+            var result = await _userManage.UpdateAsync(user);
+            if (result.Succeeded)
+            {
+                return new ApiSuccessResult<bool>();
+            }
+            return new ApiErrorResult<bool>("Cập nhật không thành công");
+        }
+
+        public async Task<ApiResult<UserViewModel>> GetById(Guid id)
+        {
+            var user = await _userManage.FindByIdAsync(id.ToString());
+            if (user == null)
+            {
+                return new ApiErrorResult<UserViewModel>("User not exits");
+            }
+            var userVm = new UserViewModel()
+            {
+                Id = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                PhoneNumber = user.PhoneNumber,
+                UserName = user.UserName,
+                Email = user.Email,
+                Dob = user.Dob
+            };
+            return new ApiSuccessResult<UserViewModel>(userVm);
         }
     }
 }

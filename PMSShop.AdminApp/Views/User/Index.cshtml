@@ -5,58 +5,65 @@
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-    <div class="container-fluid">
-        <a asp-action="Create" asp-controller="User" class="btn btn-primary btn-icon-split">
-           
-            <span class="icon text-white-50">
-                <i class="fas fa-user-plus"></i>
-            </span>
-            <span class="text">Create New User</span>
-        </a>
-        <div class="my-2"></div>
-        <!-- DataTales Example -->
-        <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">List Users</h6>
-            </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                        <thead>
+<div class="container-fluid">
+    <a asp-action="Create" asp-controller="User" class="btn btn-primary btn-icon-split">
+
+        <span class="icon text-white-50">
+            <i class="fas fa-user-plus"></i>
+        </span>
+        <span class="text">Create New User</span>
+    </a>
+    <div class="my-2"></div>
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">List Users</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Index</th>
+                            <th>FirstName</th>
+                            <th>LastName</th>
+                            <th>PhoneNumber</th>
+                            <th>UserName</th>
+                            <th>Email</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th>Index</th>
+                            <th>FirstName</th>
+                            <th>LastName</th>
+                            <th>PhoneNumber</th>
+                            <th>UserName</th>
+                            <th>Email</th>
+                            <th>Action</th>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                        @foreach (var item in Model.Items)
+                        {
                             <tr>
-                                <th>Index</th>
-                                <th>FirstName</th>
-                                <th>LastName</th>
-                                <th>PhoneNumber</th>
-                                <th>UserName</th>
-                                <th>Email</th>
+                                <td>@(Model.Items.IndexOf(item)+1)</td>
+                                <td>@item.FirstName</td>
+                                <td>@item.LastName</td>
+                                <td>@item.PhoneNumber</td>
+                                <td>@item.UserName</td>
+                                <td>@item.Email</td>
+                                <td>
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary btn-circle">
+                                        <i class="far fa-edit"></i>
+                                    </a>
+                                </td>
                             </tr>
-                        </thead>
-                        <tfoot>
-                            <tr>
-                                <th>Index</th>
-                                <th>FirstName</th>
-                                <th>LastName</th>
-                                <th>PhoneNumber</th>
-                                <th>UserName</th>
-                                <th>Email</th>
-                            </tr>
-                        </tfoot>
-                        <tbody>
-                            @foreach (var item in Model.Items)
-                            {
-                                <tr>
-                                    <td>@(Model.Items.IndexOf(item)+1)</td>
-                                    <td>@item.FirstName</td>
-                                    <td>@item.LastName</td>
-                                    <td>@item.PhoneNumber</td>
-                                    <td>@item.UserName</td>
-                                    <td>@item.Email</td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
+                        }
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
+</div>
